@@ -1,5 +1,6 @@
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
+import { useCallback } from "react";
 
 const BaseURL = 'http://127.0.0.1:8000/api/todo/'
 
@@ -31,14 +32,13 @@ const newTodo = (formInputData) => {
 
 }
 
-
-
 const AddTodo = ({ formInputData, setFormInputData }) => {
 
 
-    const handleChange = (e) => {
-        setFormInputData({ ...formInputData, [e.target.name]: e.target.value });
-    };
+    const handleChange = useCallback((e) => {
+        const { name, value } = e.target
+        setFormInputData({ ...formInputData, [name]: value });
+    }, [formInputData, setFormInputData]);
 
     const handleButtonClick = () => {
         formInputData.id ? updateTodo(formInputData) : newTodo(formInputData)

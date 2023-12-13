@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, CloseButton, ListGroup } from "react-bootstrap";
 
 const ListTodo = ({ setFormInputData }) => {
 
     const [Todos, setTodos] = useState([])
 
-    const FetchTodo = () => {
+    const FetchTodo = useCallback(() => {
         fetch("http://127.0.0.1:8000/api/todo/", { method: "GET" })
             .then(res => (res.json()))
             .then(json => setTodos(json))
             .catch(err => console.log(err))
 
-    }
+    }, [])
 
-    const handleDelete = (id) => {
+    const handleDelete = useCallback((id) => {
         fetch(`http://127.0.0.1:8000/api/todo/${id}/`, { method: "DELETE" })
             .then(res => {
                 if (res.ok) {
@@ -22,15 +22,15 @@ const ListTodo = ({ setFormInputData }) => {
                 }
             })
             .catch(err => console.log(err))
-    }
+    }, [FetchTodo])
 
     useEffect(() => {
         FetchTodo()
-    }, [])
+    }, [FetchTodo])
 
-    const handleEdit = (todo) => {
+    const handleEdit = useCallback((todo) => {
         setFormInputData(todo)
-    }
+    }, [setFormInputData])
 
 
     const renderedTodo = Todos.map((todo) => (
