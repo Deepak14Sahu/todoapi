@@ -15,8 +15,6 @@ const updateTodo = (formInputData) => {
     })
         .then(res => console.log(res))
         .catch(err => console.log(err))
-
-
 }
 
 const newTodo = (formInputData) => {
