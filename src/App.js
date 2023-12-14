@@ -1,14 +1,7 @@
 import { Container, Navbar } from "react-bootstrap";
-import ListTodo from "./Component/ListTodo";
-import AddTodo from "./Component/AddTodo";
-import { useState } from "react";
+import { Todo } from "./component/Todo";
 
 function App() {
-  const [formInputData, setFormInputData] = useState({
-    id: "",
-    title: "",
-    description: "",
-  });
   return (
     <>
       <Navbar bg="dark" data-bs-theme="dark">
@@ -17,9 +10,7 @@ function App() {
         </Container>
       </Navbar>
       <Container>
-        <AddTodo formInputData={formInputData} setFormInputData={setFormInputData} />
-        <hr />
-        <ListTodo setFormInputData={setFormInputData} />
+        <Todo />
       </Container>
     </>
   );
