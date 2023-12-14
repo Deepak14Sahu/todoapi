@@ -1,17 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button, CloseButton, ListGroup } from "react-bootstrap";
 
+
+const baseURL = 'http://127.0.0.1:8000/api/todo/'
 export const Todo = () => {
+  // State variable
   const [formInputData, setFormInputData] = useState({
-    id: "",
+    id: null,
     title: "",
     description: "",
   });
   const [todos, setTodos] = useState([])
-  const baseURL = 'http://127.0.0.1:8000/api/todo/'
 
-  const fetchTodos = useCallback(() => {
+  // Fetch todos from API
+  const fetchTodos = () => {
     fetch(baseURL)
       .then(res => {
         if (!res.ok) {
@@ -24,9 +27,10 @@ export const Todo = () => {
       })
       .catch(() => alert("some error occured! please refresh"))
 
-  }, [])
+  }
 
-  const addNewTodo = useCallback(() => {
+  // Add a new todo
+  const addNewTodo = () => {
     try {
       fetch(baseURL, {
         method: "POST",
@@ -45,10 +49,12 @@ export const Todo = () => {
     } catch (error) {
       throw new Error('Failed to add todo');
     }
-  }, [formInputData, fetchTodos])
-  const updateTodo = useCallback(() => {
+  }
+
+  // Update an existing todo
+  const updateTodo = () => {
     try {
-      fetch(baseURL + formInputData.id + "/", {
+      fetch(`${baseURL}${formInputData.id}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -65,10 +71,12 @@ export const Todo = () => {
     } catch (error) {
       throw new Error('Failed to update todo');
     }
-  }, [formInputData, fetchTodos])
+  }
+
+  // Delete a todo
   const handleDelete = (id) => {
     try {
-      fetch(baseURL + id + "/", { method: "DELETE" })
+      fetch(`${baseURL}${id}/`, { method: "DELETE" })
         .then(res => {
           if (res.ok) {
             fetchTodos()
@@ -80,24 +88,29 @@ export const Todo = () => {
     }
   }
 
-  const handleEdit = useCallback((todo) => setFormInputData(todo), [setFormInputData])
+  // Handle editing a todo
+  const handleEdit = (todo) => setFormInputData(todo)
 
-  const handleChange = useCallback((e) => {
+  // Handle form input change
+  const handleChange = (e) => {
     const { name, value } = e.target
     setFormInputData({ ...formInputData, [name]: value });
-  }, [formInputData, setFormInputData]);
+  }
 
-  const handleButtonClick = (e) => {
+  // Handle form submission
+  const handleSubmit = (e) => {
     e.preventDefault()
     formInputData.id ? updateTodo() : addNewTodo(formInputData)
   };
 
-  useEffect(() => fetchTodos(), [fetchTodos]);
+  // Fetch todos on initial render
+  useEffect(() => fetchTodos(), []);
 
+  // Render todo component
   return (
     <>
       {/* Todo form  */}
-      <Form className="my-3 " onSubmit={handleButtonClick}>
+      <Form className="my-3 " onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>Title</Form.Label>
           <Form.Control
@@ -127,6 +140,7 @@ export const Todo = () => {
       </Form>
 
       {/* Todo List showing */}
+
       <h1>Todos</h1>
       {todos.length > 0 ? (
         <ListGroup>
@@ -156,6 +170,5 @@ export const Todo = () => {
         <div>No todos available</div>
       )}
     </>
-
   )
 }
