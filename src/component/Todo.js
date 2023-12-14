@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button, CloseButton, ListGroup } from "react-bootstrap";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 const baseURL = 'http://127.0.0.1:8000/api/todo/'
+
 export const Todo = () => {
   // State variable
   const [formInputData, setFormInputData] = useState({
@@ -18,14 +21,14 @@ export const Todo = () => {
     fetch(baseURL)
       .then(res => {
         if (!res.ok) {
-          throw new Error('Failed to fetch todos');
+          toast.error("Unable to fetch data!! refresh")
         }
         return res.json();
       })
       .then(json => {
         setTodos(json);
       })
-      .catch(() => alert("some error occured! please refresh"))
+      .catch(() => toast.error("Some error occured."))
 
   }
 
@@ -43,11 +46,11 @@ export const Todo = () => {
           if (res.ok) {
             fetchTodos()
             setFormInputData({ title: '', description: '' })
-            alert("New todo added");
+            toast.success("Todo added successfully")
           }
         })
     } catch (error) {
-      throw new Error('Failed to add todo');
+      toast.error('Failed to add todo');
     }
   }
 
@@ -65,11 +68,11 @@ export const Todo = () => {
           if (res.ok) {
             fetchTodos()
             setFormInputData({ title: '', description: '' })
-            alert("Todo updated successfully");
+            toast.info("Todo updated successfully");
           }
         })
     } catch (error) {
-      throw new Error('Failed to update todo');
+      toast.error('Failed to update todo');
     }
   }
 
@@ -80,11 +83,11 @@ export const Todo = () => {
         .then(res => {
           if (res.ok) {
             fetchTodos()
-            alert("Todo removed")
+            toast.info("Todo removed.")
           }
         })
     } catch (error) {
-      throw new Error('Failed to delete todo');
+      toast.error('Failed to delete todo');
     }
   }
 
@@ -169,6 +172,9 @@ export const Todo = () => {
       ) : (
         <div>No todos available</div>
       )}
+      <ToastContainer position="top-center"
+        autoClose={2000}
+        hideProgressBar={true} />
     </>
   )
 }
